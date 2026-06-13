@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.venv-tinygrpo/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local caches
+.cache/
+.hf_cache/
+huggingface/
+
+# Experiment outputs and downloaded artifacts
+outputs/
+artifacts/
+models/
+checkpoints/
+
+# Model weights and checkpoints
+*.safetensors
+pytorch_model*.bin
+model*.bin
+*.pt
+*.pth
+*.ckpt
+*.gguf
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+.DS_Store
+
+# LaTeX intermediates, but keep report PDFs
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc

@@ -1,0 +1,53 @@
+{
+  "Base": {
+    "n": 200,
+    "correct": 133,
+    "accuracy": 0.665,
+    "answer_marker": 155,
+    "answer_marker_rate": 0.775,
+    "parseable": 200,
+    "parseable_rate": 1.0,
+    "truncated": 0,
+    "avg_reward": 0.7860000000000005,
+    "avg_tokens": 166.33,
+    "avg_chars": 493.705
+  },
+  "GRPO-500": {
+    "n": 200,
+    "correct": 140,
+    "accuracy": 0.7,
+    "answer_marker": 196,
+    "answer_marker_rate": 0.98,
+    "parseable": 200,
+    "parseable_rate": 1.0,
+    "truncated": 0,
+    "avg_reward": 0.8760000000000019,
+    "avg_tokens": 167.255,
+    "avg_chars": 495.755
+  },
+  "GRPO-1000": {
+    "n": 200,
+    "correct": 142,
+    "accuracy": 0.71,
+    "answer_marker": 195,
+    "answer_marker_rate": 0.975,
+    "parseable": 200,
+    "parseable_rate": 1.0,
+    "truncated": 0,
+    "avg_reward": 0.889000000000002,
+    "avg_tokens": 171.3,
+    "avg_chars": 507.055
+  },
+  "flips_base_to_grpo500": {
+    "both_correct": 118,
+    "both_wrong": 45,
+    "improved": 22,
+    "regressed": 15
+  },
+  "flips_base_to_grpo1000": {
+    "both_correct": 118,
+    "both_wrong": 43,
+    "improved": 24,
+    "regressed": 15
+  }
+}

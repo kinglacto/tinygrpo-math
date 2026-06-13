@@ -1,0 +1,9 @@
+# Install a CUDA-compatible PyTorch build separately for your machine.
+# See: https://pytorch.org/get-started/locally/
+#
+# The rest of the project dependencies:
+transformers>=4.45
+datasets>=2.20
+numpy>=1.24
+matplotlib>=3.7
+math-verify[antlr4_13_2]
