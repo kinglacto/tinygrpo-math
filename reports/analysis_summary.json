@@ -49,5 +49,29 @@
     "both_wrong": 43,
     "improved": 24,
     "regressed": 15
+  },
+  "ablations": {
+    "No-KL": {
+      "n": 200,
+      "correct": 136,
+      "accuracy": 0.68,
+      "answer_marker": 195,
+      "answer_marker_rate": 0.975,
+      "parseable": 200,
+      "parseable_rate": 1.0,
+      "truncated": 2,
+      "avg_reward": 0.843
+    },
+    "No-positive-format-parseability-reward": {
+      "n": 200,
+      "correct": 138,
+      "accuracy": 0.69,
+      "answer_marker": 169,
+      "answer_marker_rate": 0.845,
+      "parseable": 200,
+      "parseable_rate": 1.0,
+      "truncated": 1,
+      "avg_reward": 0.5635
+    }
   }
 }

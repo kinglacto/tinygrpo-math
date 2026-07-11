@@ -21,6 +21,10 @@ env/
 .hf_cache/
 huggingface/
 
+# Local credentials and university cluster documentation
+creds.txt
+Turing User Guide - HPC.html
+
 # Experiment outputs and downloaded artifacts
 outputs/
 artifacts/

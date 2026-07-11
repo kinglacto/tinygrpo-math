@@ -98,6 +98,31 @@ GRPO-1000 & 142/200 & 71.0\% & 195/200, 97.5\% & 200/200 & 0.889 \\
 
 Relative to the base model, GRPO-1000 improved accuracy by \textbf{+4.5 percentage points} and answer-format compliance by \textbf{+20.0 percentage points}. Truncation remained 0/200 for all runs.
 
+\section{Matched Ablations}
+
+Two single-change ablations used the same seed, train rows 0--999, two 500-update stages, sampling settings, and 200-example held-out evaluation as GRPO-1000. The no-KL variant set \(\beta=0\). The no-shaping variant removed only the positive +0.2 final-format and +0.1 parseability rewards; it retained correctness rewards and all wrong-answer, invalid-output, length, and truncation penalties.
+
+\begin{table}[h]
+\centering
+\caption{Matched ablations on the same 200 held-out GSM8K examples.}
+\label{tab:ablations}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Run & Correct & Accuracy & Answer format & Parseable & Truncated \\
+\midrule
+Full GRPO-1000 & 142/200 & 71.0\% & 195/200, 97.5\% & 200/200, 100\% & 0/200 \\
+No KL (\(\beta=0\)) & 136/200 & 68.0\% & 195/200, 97.5\% & 200/200, 100\% & 2/200 \\
+No positive shaping & 138/200 & 69.0\% & 169/200, 84.5\% & 200/200, 100\% & 1/200 \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+Neither ablation improved held-out accuracy. Removing KL reduced accuracy by 3.0 percentage points while leaving final-answer compliance unchanged, supporting the value of anchoring the policy to the base-model reference. Removing positive shaping reduced accuracy by 2.0 points and final-answer compliance by 13.0 points, while measured parseability remained saturated at 100\%. This separates the effect of parseability as a metric from the reward's effect on consistently ending in the requested final-answer format.
+
+The no-shaping average reward is not compared against the full-reward run because its reward scale is intentionally different. These are matched single-seed sensitivity checks, not definitive causal estimates.
+
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.92\linewidth]{figures/eval_metrics.pdf}
@@ -206,8 +231,9 @@ The 1000-update TinyGRPO-Math run produced a measurable pilot improvement over t
 \item Final-answer format compliance improved from \textbf{77.5\%} to \textbf{97.5\%}.
 \item Parseability stayed at \textbf{100\%}; truncation stayed at \textbf{0\%}.
 \item The result was achieved with deterministic rule-based rewards, without training a reward model.
+\item Matched ablations found that neither removing KL nor removing positive format/parseability shaping improved held-out accuracy.
 \end{itemize}
 
-The strongest honest project claim is therefore: \emph{GRPO with deterministic math rewards improved held-out GSM8K accuracy by 4.5 percentage points and final-answer compliance by 20.0 percentage points for a compact 1.5B instruction model.} The main caveat is evaluation size: 200 examples is enough for a strong side-project demonstration, but not enough for a benchmark-quality statistical claim. A natural next step is to repeat the evaluation on the full GSM8K test split and run ablations over group size, KL strength, and reward composition.
+The strongest honest project claim is therefore: \emph{GRPO with deterministic math rewards improved held-out GSM8K accuracy by 4.5 percentage points and final-answer compliance by 20.0 percentage points for a compact 1.5B instruction model.} The matched ablations support the chosen KL reference and positive shaping terms, but are one-seed sensitivity checks rather than conclusive effect estimates. The main caveat is evaluation size: 200 examples is enough for a strong side-project demonstration, but not enough for a benchmark-quality statistical claim. A natural next step is repeated seeds, a full GSM8K test evaluation, and ablations over group size and dataset slice.
 
 \end{document}

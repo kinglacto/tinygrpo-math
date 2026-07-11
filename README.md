@@ -25,6 +25,20 @@ This is a pilot-scale result, not a benchmark claim. On the 200-example paired e
 
 ![Gains over base](reports/figures/eval_deltas.png)
 
+## Matched Ablations
+
+Two single-change ablations used the same seed, train rows `0:1000`, two 500-update stages, decoding settings, and 200-example held-out evaluation as GRPO-1000.
+
+| Run | Correct | Accuracy | Answer format | Parseable | Truncated |
+|---|---:|---:|---:|---:|---:|
+| Full GRPO-1000 | 142/200 | 71.0% | 195/200, 97.5% | 200/200, 100% | 0/200 |
+| No KL (`beta=0`) | 136/200 | 68.0% | 195/200, 97.5% | 200/200, 100% | 2/200 |
+| No positive format/parseability reward | 138/200 | 69.0% | 169/200, 84.5% | 200/200, 100% | 1/200 |
+
+Neither ablation improves held-out accuracy. The no-KL result is 3.0 points below full GRPO, indicating that the KL reference is useful in this setup. Removing only the `+0.2` final-format and `+0.1` parseability bonuses costs 2.0 accuracy points and 13.0 points of final-answer compliance, while measured parseability remains saturated at 100%.
+
+These are matched single-seed sensitivity checks, not definitive causal estimates. Average rewards are intentionally omitted because the no-shaping run uses a different reward scale.
+
 ## Full Report
 
 The detailed report includes training curves, paired flip analysis, group-level GRPO signal quality, and GPU resource usage:
@@ -42,7 +56,9 @@ The detailed report includes training curves, paired flip analysis, group-level 
 ```text
 .
 ├── scripts/
-│   └── tinygrpo_math.py          # Main training/eval script
+│   ├── tinygrpo_math.py          # Main training/eval script
+│   ├── turing_ablation_no_kl.sh
+│   └── turing_ablation_no_format_parseability_reward.sh
 ├── reports/
 │   ├── tinygrpo_math_report.pdf  # Compiled report
 │   ├── tinygrpo_math_report.tex  # LaTeX source
@@ -179,6 +195,8 @@ Answer: <number>
 
 The scorer also accepts common fallback formats like `Final Answer: <number>` and boxed LaTeX answers.
 
+`--format_reward` and `--parseable_reward` default to `0.2` and `0.1`, respectively. Setting both to `0` reproduces the no-positive-shaping ablation while leaving correctness and penalty terms unchanged.
+
 ## Logs
 
 Each training run writes:
@@ -207,5 +225,4 @@ eval_samples.jsonl
 - Training uses the GSM8K train split.
 - Evaluation uses the GSM8K test split.
 - An exact question-text overlap check between train rows `0:1000` and test rows `0:200` found 0 overlaps.
-- The current result is side-project scale. A full benchmark claim would require larger evaluation, repeated seeds, and ablations over reward design, KL strength, group size, and dataset slice.
-
+- The current result is side-project scale. The matched no-KL and no-positive-shaping checks are useful sensitivity evidence, but a full benchmark claim would still require larger evaluation, repeated seeds, and further ablations over group size and dataset slice.

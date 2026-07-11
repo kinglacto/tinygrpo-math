@@ -64,6 +64,18 @@ def parse_args():
     parser.add_argument("--temperature", type=float, default=0.5)
     parser.add_argument("--top_p", type=float, default=0.9)
     parser.add_argument("--reward_max_chars", type=int, default=2000)
+    parser.add_argument(
+        "--format_reward",
+        type=float,
+        default=0.2,
+        help="Positive reward for ending with a recognized final-answer format.",
+    )
+    parser.add_argument(
+        "--parseable_reward",
+        type=float,
+        default=0.1,
+        help="Positive reward for producing a parseable final answer.",
+    )
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--output_dir", default="outputs/qwen25_15_grpo_gsm8k")
     parser.add_argument(
@@ -283,6 +295,8 @@ def score_completion_components(
     gold_answer,
     max_chars=1200,
     truncated_without_eos=False,
+    format_reward_value=0.2,
+    parseable_reward_value=0.1,
 ):
     pred = extract_model_answer(completion)
     gold = normalize_number(gold_answer)
@@ -314,10 +328,10 @@ def score_completion_components(
         correct_reward = 1.0
         reward += correct_reward
     if ends_with_answer:
-        format_reward = 0.2
+        format_reward = format_reward_value
         reward += format_reward
     if is_parseable:
-        parseable_reward = 0.1
+        parseable_reward = parseable_reward_value
         reward += parseable_reward
     else:
         invalid_penalty = -0.5
@@ -572,6 +586,8 @@ def reward_details_for_outputs(
     epoch=0,
     step=0,
     max_chars=2000,
+    format_reward_value=0.2,
+    parseable_reward_value=0.1,
 ):
     details = []
     rewards = []
@@ -582,6 +598,8 @@ def reward_details_for_outputs(
             gold,
             max_chars=max_chars,
             truncated_without_eos=generation.get("truncated_without_eos", False),
+            format_reward_value=format_reward_value,
+            parseable_reward_value=parseable_reward_value,
         )
         reward = components["reward"]
         rewards.append(reward)
@@ -801,6 +819,8 @@ def run_debug(args, model, tokenizer, dataloader, output_dir):
         generation_details=gen_details,
         group_size=args.group_size,
         max_chars=args.reward_max_chars,
+        format_reward_value=args.format_reward,
+        parseable_reward_value=args.parseable_reward,
     )
 
     debug_path = output_dir / "debug_samples.jsonl"
@@ -875,6 +895,8 @@ def evaluate(args, model, tokenizer, dataloader, output_dir, model_source):
             group_size=1,
             step=step + 1,
             max_chars=args.reward_max_chars,
+            format_reward_value=args.format_reward,
+            parseable_reward_value=args.parseable_reward,
         )
 
         for local_idx, item in enumerate(details):
@@ -1018,6 +1040,8 @@ def train(args, pi_new, pi_ref, tokenizer, dataloader, output_dir, device):
                     epoch=epoch + 1,
                     step=step + 1,
                     max_chars=args.reward_max_chars,
+                    format_reward_value=args.format_reward,
+                    parseable_reward_value=args.parseable_reward,
                 )
 
                 seq_rewards = torch.tensor(rewards, dtype=torch.float32, device=device)
